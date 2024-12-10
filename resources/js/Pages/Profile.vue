@@ -1,7 +1,9 @@
 <script setup>
 import { Head, Link } from '@inertiajs/vue3';
+import { ref } from 'vue';
 import Post from '@/Components/Post.vue';
 import CustomHeader from '@/Components/CustomHeader.vue';
+
 
 defineProps({
     canLogin: {
@@ -22,6 +24,10 @@ defineProps({
         type: Array,
         required: true,
     },
+    user:{
+        type: Array,
+        required: true
+    }
 });
 
 function handleImageError() {
@@ -41,7 +47,7 @@ function handleImageError() {
             src="https://laravel.com/assets/img/welcome/background.svg"
         />
         <div
-            class="relative flex min-h-screen flex-col items-center  selection:bg-[#FF2D20] selection:text-white"
+            class="relative flex min-h-screen flex-col items-center selection:bg-[#FF2D20] selection:text-white"
         >
             <div class="relative w-full max-w-2xl px-6 lg:max-w-7xl">
                 <CustomHeader :can-login="canLogin" :can-register="canRegister" />
@@ -49,6 +55,18 @@ function handleImageError() {
                 <main class="mt-6">
                     <div class="grid gap-6 lg:grid-cols-1 lg:gap-8">
                         <div class="grid grid-cols-1 gap-6 lg:grid-cols-1">
+                            <div class="bg-gray-900 bg-opacity-50 backdrop-blur-md rounded-md p-4 border border-black border-opacity-10">
+                                <div class="p-6 text-white">
+                                    <h2 class="text-xl font-semibold">
+                                        Данные пользователя
+                                    </h2>
+                                    <p class="mt-2">Имя: {{ user.name }}</p>
+                                    <p class="mt-2">На сайте с: {{ new Intl.DateTimeFormat('ru-RU').format(new Date(user.created_at)) }}</p>
+                                </div>
+                            </div>
+                                <h2 class="text-xl font-semibold mt-4 text-white">
+                                    Посты пользователя
+                                </h2>
                             <div v-for="post in posts" :key="post.url">
                                 <Post
                                     :title="post.title"
@@ -61,15 +79,8 @@ function handleImageError() {
                         </div>
                     </div>
                 </main>
-
-                <footer
-                    class=" bottom-0 left-0 right-0 py-6 text-center text-sm text-black dark:text-white/70 bg-white dark:bg-zinc-900 w-full"
-                >
-                    Автор: Хакимов Дмитрий Дамирович
-                    <br>
-                    Laravel v{{ laravelVersion }} (PHP v{{ phpVersion }})
-                </footer>
             </div>
         </div>
     </div>
 </template>
+
