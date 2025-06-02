@@ -26,6 +26,26 @@ class CommentController extends Controller
     /**
      * Store a newly created resource in storage.
      */
+    /**
+     * @OA\Post(
+     *     path="/comments",
+     *     summary="Store a newly created comment in storage.",
+     *     tags={"Comment"},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="text", type="string", example="Some comment"),
+     *             @OA\Property(property="user_id", type="integer", example=1),
+     *             @OA\Property(property="post_id", type="integer", example=1)
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=201,
+     *         description="successful operation"
+     *     )
+     * )
+     */
     public function store(Request $request)
     {
         Comment::create([

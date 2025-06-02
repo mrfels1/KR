@@ -11,10 +11,21 @@ use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 use Inertia\Response;
 
+
 class ProfileController extends Controller
 {
     /**
      * Display the user's profile form.
+     *
+     * @OA\Get(
+     *     path="/profile/edit",
+     *    tags={"Profile"},
+     *     summary="Display profile edit form",
+     *     @OA\Response(
+     *         response=200,
+     *         description="Display user's profile form"
+     *     )
+     * )
      */
     public function edit(Request $request): Response
     {
@@ -26,6 +37,24 @@ class ProfileController extends Controller
 
     /**
      * Update the user's profile information.
+     *
+     * @OA\Patch(
+     *     path="/profile",
+     * tags={"Profile"},
+     *     summary="Update profile information",
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="name", type="string", example="John Doe"),
+     *             @OA\Property(property="email", type="string", format="email", example="johndoe@example.com")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Profile updated successfully"
+     *     )
+     * )
      */
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
@@ -42,6 +71,22 @@ class ProfileController extends Controller
 
     /**
      * Delete the user's account.
+     *
+     * @OA\Delete(
+     *     path="/profile",
+     * tags={"Profile"},
+     *     summary="Delete user account",
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             @OA\Property(property="password", type="string", example="current_password")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Account deleted successfully"
+     *     )
+     * )
      */
     public function destroy(Request $request): RedirectResponse
     {

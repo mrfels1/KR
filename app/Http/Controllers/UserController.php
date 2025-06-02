@@ -10,26 +10,38 @@ use Illuminate\Support\Facades\Route;
 
 class UserController extends Controller
 {
-    public function mypage(Request $request){
-        return Inertia::render("Profile", [ 
+    /**
+     * @OA\Get(
+     *     path="/user",
+     *     summary="Show the user's profile page",
+     *     tags={"User"},
+     *     @OA\Response(
+     *         response=200,
+     *         description="successful operation"
+     *     )
+     * )
+     */
+    public function mypage(Request $request)
+    {
+        return Inertia::render("Profile", [
             'canLogin' => Route::has('login'),
             'canRegister' => Route::has('register'),
             'user' => $request->user(),
             'posts' => Post::where('user_id', $request->user()->id)
-                          ->orderByDesc('created_at')
-                          ->get()
-                          ->map(function ($post) {
-                return [
-                    'title' => $post->title,
-                    'text' => $post->text,
-                    'authorName' => User::find($post->user_id)->name,
-                    'url' => env('APP_URL') . '/post/' . $post->id,
-                    'authorID' => env('APP_URL') . '/user/' .$post->user_id,
-                ];
-            })->toArray(),
+                ->orderByDesc('created_at')
+                ->get()
+                ->map(function ($post) {
+                    return [
+                        'title' => $post->title,
+                        'text' => $post->text,
+                        'authorName' => User::find($post->user_id)->name,
+                        'url' => env('APP_URL') . '/post/' . $post->id,
+                        'authorID' => env('APP_URL') . '/user/' . $post->user_id,
+                    ];
+                })->toArray(),
         ]);
     }
-    
+
     /**
      * Display a listing of the resource.
      */
@@ -39,9 +51,17 @@ class UserController extends Controller
     }
 
 
-    
+
     /**
-     * Show the form for creating a new resource.
+     * @OA\Get(
+     *     path="/user/create",
+     *     summary="Show the form for creating a new resource.",
+     *     tags={"User"},
+     *     @OA\Response(
+     *         response=200,
+     *         description="successful operation"
+     *     )
+     * )
      */
     public function create()
     {
@@ -52,7 +72,23 @@ class UserController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * @OA\Post(
+     *     path="/user",
+     *     summary="Store a newly created resource in storage.",
+     *     tags={"User"},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="title", type="string", example="Some title"),
+     *             @OA\Property(property="text", type="string", example="Some text")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=201,
+     *         description="successful operation"
+     *     )
+     * )
      */
     public function store(Request $request)
     {
@@ -65,26 +101,54 @@ class UserController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * @OA\Get(
+     *     path="/user/{id}",
+     *     summary="Display the specified user.",
+     *     tags={"User"},
+     *     @OA\Parameter(
+     *         description="id of the user",
+     *         in="path",
+     *         name="id",
+     *         required=true,
+     *         example=1,
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="successful operation",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="user", ref="#/components/schemas/User"),
+     *             @OA\Property(
+     *                 property="posts",
+     *                 type="array",
+     *                 @OA\Items(ref="#/components/schemas/Post")
+     *             )
+     *         )
+     *     )
+     * )
      */
     public function show(Request $request)
     {
-        return Inertia::render("Profile", [ 
+        return Inertia::render("Profile", [
             'canLogin' => Route::has('login'),
             'canRegister' => Route::has('register'),
             'user' => User::find($request->id),
             'posts' => Post::where('user_id', $request->id)
-                          ->orderByDesc('created_at')
-                          ->get()
-                          ->map(function ($post) {
-                return [
-                    'title' => $post->title,
-                    'text' => $post->text,
-                    'authorName' => User::find($post->user_id)->name,
-                    'url' => env('APP_URL') . '/post/' . $post->id,
-                    'authorID' => env('APP_URL') . '/user/' .$post->user_id,
-                ];
-            })->toArray(),
+                ->orderByDesc('created_at')
+                ->get()
+                ->map(function ($post) {
+                    return [
+                        'title' => $post->title,
+                        'text' => $post->text,
+                        'authorName' => User::find($post->user_id)->name,
+                        'url' => env('APP_URL') . '/post/' . $post->id,
+                        'authorID' => env('APP_URL') . '/user/' . $post->user_id,
+                    ];
+                })->toArray(),
         ]);
     }
 
