@@ -61,7 +61,7 @@ watch(() => props.dislikesCount, (val) => (dislikes.value = val));
 
 
 const page = usePage();
-const userId = page.props.auth.user.id;
+const userId = page.props.auth.user ? page.props.auth.user.id : null; // Получаем ID пользователя из страницы
 const postId = props.url.split('/').pop(); // Предполагается, что URL заканчивается на ID поста
 
 // Лайк

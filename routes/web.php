@@ -11,9 +11,17 @@ use App\Http\Controllers\CommentController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\LikeController;
 use App\Http\Controllers\SubscribeController;
+use Illuminate\Http\Request;
 
-Route::get('/', function () {
-    $posts = Post::orderByDesc('created_at')->get()->map(function ($post) {
+Route::get('/', function (Request $request) {
+    $posts = Post::orderByDesc('created_at')->get()->map(function ($post) use ($request) {
+        if ($request->user()) {
+            $isLiked = $post->isLikedByUser($request->user()->id);
+            $isDisliked = $post->isDislikedByUser($request->user()->id);
+        } else {
+            $isLiked = null;
+            $isDisliked = null;
+        }
         return [
             'title' => $post->title,
             'text' => $post->text,
@@ -22,8 +30,8 @@ Route::get('/', function () {
             'authorID' => env('APP_URL') . '/user/' . $post->user_id,
             'likesCount' => $post->likescount(),
             'dislikesCount' => $post->dislikescount(),
-            'isLiked' => $post->isLikedByUser(auth()->user()->id),
-            'isDisliked' => $post->isDislikedByUser(auth()->user()->id),
+            'isLiked' => $isLiked,
+            'isDisliked' => $isDisliked,
         ];
     })->toArray();
 
@@ -34,7 +42,7 @@ Route::get('/', function () {
         'phpVersion' => PHP_VERSION,
         'posts' => $posts,
     ]);
-})->middleware(['auth'])->name('main');
+})->name('main');
 
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
@@ -64,6 +72,8 @@ Route::middleware('auth')->group(function () {
 
     Route::post('/subscribe/{userid}', [SubscribeController::class, 'subscribe'])->name('subscribe');
     Route::post('/unsubscribe/{userid}', [SubscribeController::class, 'unsubscribe'])->name('unsubscribe');
+
+    Route::get('/sub_posts', [UserController::class, 'sub_posts'])->name('sub_posts');
 });
 
 

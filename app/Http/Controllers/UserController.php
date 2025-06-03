@@ -7,6 +7,9 @@ use App\Models\User;
 use Inertia\Inertia;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Foundation\Application;
+use App\Http\Controllers\Controller;
+use App\Models\Subscription;
 
 class UserController extends Controller
 {
@@ -197,5 +200,38 @@ class UserController extends Controller
     public function destroy(Post $post)
     {
         //
+    }
+
+    public function sub_posts(Request $request)
+    {
+        $subscriptions = Subscription::where('subscriber_id', $request->user()->id)->get();
+        $posts = Post::whereIn('user_id', $subscriptions->pluck('subscribee_id'))->orderByDesc('created_at')->get()->map(function ($post) use ($request) {
+            if ($request->user()) {
+                $isLiked = $post->isLikedByUser($request->user()->id);
+                $isDisliked = $post->isDislikedByUser($request->user()->id);
+            } else {
+                $isLiked = null;
+                $isDisliked = null;
+            }
+            return [
+                'title' => $post->title,
+                'text' => $post->text,
+                'authorName' => User::find($post->user_id)->name,
+                'url' => env('APP_URL') . '/post/' . $post->id,
+                'authorID' => env('APP_URL') . '/user/' . $post->user_id,
+                'likesCount' => $post->likescount(),
+                'dislikesCount' => $post->dislikescount(),
+                'isLiked' => $isLiked,
+                'isDisliked' => $isDisliked,
+            ];
+        })->toArray();
+
+        return Inertia::render('Welcome', [
+            'canLogin' => Route::has('login'),
+            'canRegister' => Route::has('register'),
+            'laravelVersion' => Application::VERSION,
+            'phpVersion' => PHP_VERSION,
+            'posts' => $posts,
+        ]);
     }
 }
