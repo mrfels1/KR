@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('subscribe', function (Blueprint $table) {
+        Schema::create('subscriptions', function (Blueprint $table) {
             $table->id();
             $table->foreignId('subscriber_id')->constrained('users')->onDelete('cascade');
             $table->foreignId('subscribee_id')->constrained('users')->onDelete('cascade');
@@ -27,4 +27,3 @@ return new class extends Migration
         Schema::dropIfExists('subscribe');
     }
 };
-

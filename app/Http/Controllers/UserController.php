@@ -23,15 +23,15 @@ class UserController extends Controller
      */
     public function mypage(Request $request)
     {
-        $userid = $request->user()->id;
         return Inertia::render("Profile", [
             'canLogin' => Route::has('login'),
             'canRegister' => Route::has('register'),
-            'user' => $request->user(),
+            'user' => User::find($request->user()->id),
+            'is_subscribed' => null,
             'posts' => Post::where('user_id', $request->user()->id)
                 ->orderByDesc('created_at')
                 ->get()
-                ->map(function ($post) use ($userid) {
+                ->map(function ($post) {
                     return [
                         'title' => $post->title,
                         'text' => $post->text,
@@ -40,8 +40,8 @@ class UserController extends Controller
                         'authorID' => env('APP_URL') . '/user/' . $post->user_id,
                         'likesCount' => $post->likescount(),
                         'dislikesCount' => $post->dislikescount(),
-                        'isLiked' => $post->isLikedByUser($userid),
-                        'isDisliked' => $post->isDislikedByUser($userid),
+                        'isLiked' => $post->isLikedByUser(auth()->user()->id),
+                        'isDisliked' => $post->isDislikedByUser(auth()->user()->id),
                     ];
                 })->toArray(),
         ]);
@@ -62,6 +62,7 @@ class UserController extends Controller
                     'email' => $user->email,
                     'created_at' => $user->created_at,
                     'url' => env('APP_URL') . '/user/' . $user->id,
+                    'postsCount' => $user->posts()->count(),
                 ];
             })->toArray()
         ]);
@@ -154,6 +155,7 @@ class UserController extends Controller
             'canLogin' => Route::has('login'),
             'canRegister' => Route::has('register'),
             'user' => User::find($request->id),
+            'is_subscribed' => auth()->user() ? auth()->user()->isSubscribedTo($request->id) : false,
             'posts' => Post::where('user_id', $request->id)
                 ->orderByDesc('created_at')
                 ->get()

@@ -10,6 +10,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\LikeController;
+use App\Http\Controllers\SubscribeController;
 
 Route::get('/', function () {
     $posts = Post::orderByDesc('created_at')->get()->map(function ($post) {
@@ -50,18 +51,19 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/user', [UserController::class, 'mypage'])->name('mypage');
     Route::get('/user/{id}', [UserController::class, 'show'])->name('page');
-
+    Route::get('/users', [UserController::class, 'index'])->name('search-users');
     Route::get('/post/{id}', [PostController::class, 'show'])->name('view-post');
 
     Route::post('/create-comment', [CommentController::class, 'store'])->name('create-comment');
 
     Route::post('/like/{postid}', [LikeController::class, 'like'])->name('like');
-
     Route::post('/dislike/{postid}', [LikeController::class, 'dislike'])->name('dislike');
-
     Route::post('/remove-like/{postid}', [LikeController::class, 'removeLike'])->name('remove-like');
 
-    Route::get('/users', [UserController::class, 'index'])->name('search-users');
+
+
+    Route::post('/subscribe/{userid}', [SubscribeController::class, 'subscribe'])->name('subscribe');
+    Route::post('/unsubscribe/{userid}', [SubscribeController::class, 'unsubscribe'])->name('unsubscribe');
 });
 
 

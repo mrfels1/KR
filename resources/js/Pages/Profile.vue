@@ -3,7 +3,7 @@ import { Head, Link } from '@inertiajs/vue3';
 import { ref } from 'vue';
 import Post from '@/Components/Post.vue';
 import CustomHeader from '@/Components/CustomHeader.vue';
-
+import SubscribeButton from '@/Components/SubscribeButton.vue';
 
 defineProps({
     canLogin: {
@@ -27,6 +27,10 @@ defineProps({
     user:{
         type: Array,
         required: true
+    },
+    is_subscribed: {
+        type: Boolean,
+        required: false
     }
 });
 
@@ -63,6 +67,13 @@ function handleImageError() {
                                     <p class="mt-2">Имя: {{ user.name }}</p>
                                     <p class="mt-2">На сайте с: {{ new Intl.DateTimeFormat('ru-RU').format(new Date(user.created_at)) }}</p>
                                 </div>
+                                <div v-if="is_subscribed !== null">
+                                    <SubscribeButton
+                                    :user-id="user.id"
+                                    :initial-subscribed="is_subscribed"
+                                />
+                                </div>
+                                
                             </div>
                                 <h2 class="text-xl font-semibold mt-4 text-white">
                                     Посты пользователя

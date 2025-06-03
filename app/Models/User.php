@@ -96,6 +96,16 @@ class User extends Authenticatable
     {
         return $this->hasMany(Subscription::class, 'subscribee_id');
     }
+
+    public function isSubscribedTo(int $id): ?bool
+    {
+        if ($id === $this->id) {
+            return null;
+        }
+        return $this->subscriptions()->where('subscribee_id', $id)->where('subscriber_id', $this->id)->exists();
+    }
+
+
     /**
      * Get the attributes that should be cast.
      *
@@ -107,5 +117,15 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function posts()
+    {
+        return $this->hasMany(Post::class);
+    }
+
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
     }
 }

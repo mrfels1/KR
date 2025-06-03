@@ -40,8 +40,8 @@ defineProps({
                             <li v-for="user in users" :key="user.id" class="flex items-center justify-between p-2 border-b border-white bg-black bg-opacity-50 backdrop-blur-md rounded-md">
                                 <div>
                                     <p class=" font-semibold">{{ user.name }}</p>
-                                    <p class=" text-white-500">{{ user.email }}</p>
-                                    <p class=" text-white-500">Joined: {{ user.created_at }}</p>
+                                    <p class=" text-white-500">Количество постов: {{ user.postsCount }}</p>
+                                    <p class=" text-white-500">На сайте с: {{ new Intl.DateTimeFormat('ru-RU', { year: 'numeric', month: '2-digit', day: '2-digit' }).format(new Date(user.created_at)) }}</p>
                                 </div>
                                 <Link :href="user.url" class="text-blue-500 hover:text-blue-700">View Profile</Link>
                             </li>
