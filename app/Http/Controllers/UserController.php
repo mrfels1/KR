@@ -50,9 +50,21 @@ class UserController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        return Inertia::render("UsersList", [
+            'canLogin' => Route::has('login'),
+            'canRegister' => Route::has('register'),
+            'users' => User::all()->map(function ($user) {
+                return [
+                    'id' => $user->id,
+                    'name' => $user->name,
+                    'email' => $user->email,
+                    'created_at' => $user->created_at,
+                    'url' => env('APP_URL') . '/user/' . $user->id,
+                ];
+            })->toArray()
+        ]);
     }
 
 
@@ -152,6 +164,10 @@ class UserController extends Controller
                         'authorName' => User::find($post->user_id)->name,
                         'url' => env('APP_URL') . '/post/' . $post->id,
                         'authorID' => env('APP_URL') . '/user/' . $post->user_id,
+                        'likesCount' => $post->likescount(),
+                        'dislikesCount' => $post->dislikescount(),
+                        'isLiked' => $post->isLikedByUser(auth()->user()->id),
+                        'isDisliked' => $post->isDislikedByUser(auth()->user()->id),
                     ];
                 })->toArray(),
         ]);

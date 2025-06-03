@@ -60,6 +60,8 @@ Route::middleware('auth')->group(function () {
     Route::post('/dislike/{postid}', [LikeController::class, 'dislike'])->name('dislike');
 
     Route::post('/remove-like/{postid}', [LikeController::class, 'removeLike'])->name('remove-like');
+
+    Route::get('/users', [UserController::class, 'index'])->name('search-users');
 });
 
 
