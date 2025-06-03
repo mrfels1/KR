@@ -23,6 +23,7 @@ class UserController extends Controller
      */
     public function mypage(Request $request)
     {
+        $userid = $request->user()->id;
         return Inertia::render("Profile", [
             'canLogin' => Route::has('login'),
             'canRegister' => Route::has('register'),
@@ -30,13 +31,17 @@ class UserController extends Controller
             'posts' => Post::where('user_id', $request->user()->id)
                 ->orderByDesc('created_at')
                 ->get()
-                ->map(function ($post) {
+                ->map(function ($post) use ($userid) {
                     return [
                         'title' => $post->title,
                         'text' => $post->text,
                         'authorName' => User::find($post->user_id)->name,
                         'url' => env('APP_URL') . '/post/' . $post->id,
                         'authorID' => env('APP_URL') . '/user/' . $post->user_id,
+                        'likesCount' => $post->likescount(),
+                        'dislikesCount' => $post->dislikescount(),
+                        'isLiked' => $post->isLikedByUser($userid),
+                        'isDisliked' => $post->isDislikedByUser($userid),
                     ];
                 })->toArray(),
         ]);

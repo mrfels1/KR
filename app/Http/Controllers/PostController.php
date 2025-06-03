@@ -111,6 +111,12 @@ class PostController extends Controller
         $post['authorName'] = User::find($post['user_id'])->name;
         $post['url'] = env('APP_URL') . '/post/' . $post['id'];
         $post['authorID'] = env('APP_URL') . '/user/' . $post['user_id'];
+        $post['likesCount'] = Post::find($request->id)->likescount();
+        $post['dislikesCount'] = Post::find($request->id)->dislikescount();
+        $post['isLiked'] = Post::find($request->id)->isLikedByUser($request->user()->id);
+        $post['isDisliked'] = Post::find($request->id)->isDislikedByUser($request->user()->id);
+
+
 
         return Inertia::render('ViewPost', [
             'canLogin' => Route::has('login'),
@@ -122,6 +128,7 @@ class PostController extends Controller
                     'authorName' => User::find($comment->user_id)->name,
                     'created_at' => $comment->created_at,
                     'authorID' => env('APP_URL') . '/user/' . $comment->user_id,
+
                 ];
             })->toArray(),
         ]);

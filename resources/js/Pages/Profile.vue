@@ -74,6 +74,10 @@ function handleImageError() {
                                     :authorID="post.authorID"
                                     :text="post.text"
                                     :url="post.url"
+                                    :likesCount="post.likesCount"
+                                    :dislikesCount="post.dislikesCount"
+                                    :isLiked="post.isLiked"
+                                    :isDisliked="post.isDisliked"
                                 />
                             </div>
                         </div>

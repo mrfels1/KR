@@ -51,11 +51,15 @@ function handleImageError() {
                             <div class="bg-gray-900 bg-opacity-50 backdrop-blur-md rounded-md p-4 border border-black border-opacity-10">
                                 <div class="p-6 text-white">
                                     <Post 
-                                        :title="post.title" 
-                                        :authorName="post.authorName" 
-                                        :authorID="post.authorID" 
-                                        :text="post.text" 
-                                        :url="post.url"
+                                    :title="post.title"
+                                    :authorName="post.authorName"
+                                    :authorID="post.authorID"
+                                    :text="post.text"
+                                    :url="post.url"
+                                    :likesCount="post.likesCount"
+                                    :dislikesCount="post.dislikesCount"
+                                    :isLiked="post.isLiked"
+                                    :isDisliked="post.isDisliked"
                                     />
                                 </div>
 

@@ -75,4 +75,28 @@ class Post extends Model
     {
         return $this->hasMany(Comment::class);
     }
+
+
+    public function likes()
+    {
+        return $this->hasMany(Like::class);
+    }
+
+    public function likescount()
+    {
+        return $this->likes()->where('is_liked', true)->count();
+    }
+
+    public function dislikescount()
+    {
+        return $this->likes()->where('is_liked', false)->count();
+    }
+    public function isLikedByUser($userId)
+    {
+        return $this->likes()->where('user_id', $userId)->where('is_liked', true)->exists();
+    }
+    public function isDislikedByUser($userId)
+    {
+        return $this->likes()->where('user_id', $userId)->where('is_liked', false)->exists();
+    }
 }
